@@ -24,8 +24,39 @@ function App() {
   const [gameStage, setGameStage] = useState(stages[0].name)
   const [words] = useState(wordsList);
 
+  const [pickWords, setPickWords] = useState("")
+  const [pickCatagory, setPickCatagory] = useState("")
+  const [letters, setLetters] = useState([])
+
+  const pickLettrsAndCatagory = () => {
+    // pick a randon category
+    const categories = Object.keys(words)
+    const category = categories[Math.floor(Math.random() * Object.keys(categories).length)]
+    console.log(category);
+
+    // pick a rando word
+    const word = words[category][Math.floor(Math.random() * words[category].length)]
+    console.log(word);
+
+    return{word, category}
+  }
+
   // starts the secret words
   const startGame = () => {
+    //pick word and category
+    const {word, category} = pickLettrsAndCatagory();
+    
+    // create an array of letter
+    let wordLetters = word.split("");
+    wordLetters = wordLetters.map((l) => l.toLowerCase())
+
+    console.log(word, category);
+    console.log(wordLetters);
+
+    // fill states
+    setLetters(letters)
+    setPickCatagory(category)
+    setPickWords(word)
     setGameStage(stages[1].name)
   }
 
@@ -34,11 +65,16 @@ function App() {
     setGameStage(stages[2].name)
   }
 
+  // restart the game
+  const retry = () => {
+    setGameStage(stages[0].name)
+  }
+
   return (
     <div className="App">
         {gameStage === "start" &&  <StartScreen startGame={startGame}/>}
         {gameStage === "game" &&  <Game verifyLetter={verifyLetter}/>}
-        {gameStage === "end" &&  <GameOver/>}
+        {gameStage === "end" &&  <GameOver retry={retry}/>}
     </div>
   );
 }
